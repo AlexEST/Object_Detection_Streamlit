@@ -66,10 +66,11 @@ def object_detection_video():
                 layer_outputs = net.forward(ln)
                 time_took = time.perf_counter() - start
                 count +=1
+                # Вывод времени в консоль
                 print(f"Time took: {count}", time_took)
                 boxes, confidences, class_ids = [], [], []
 
-                # цикля для кадра
+                # цикл для кадра
                 for output in layer_outputs:
                     # Цикл для объекта
                     for detection in output:
@@ -159,6 +160,7 @@ def object_detection_image():
         lines = f.readlines()
         classNames = [line.strip() for line in lines]
         config_path = r'..\config_n_weights\yolov3.cfg'
+        # yolov3.weights сохранен через git lfs. Необходимо зайти в папку config_n_weights и скачать
         weights_path = r'..\config_n_weights\yolov3.weights'
         net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
         net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
