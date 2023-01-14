@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
 import cv2
-from PIL import Image, ImageEnhance
+from PIL import Image
 import numpy as np
 import os
-#import tensorflow as tf
-#import tensorflow_hub as hub
 import time ,sys
 from streamlit_embedcode import github_gist
-import urllib.request
 import urllib
 import moviepy.editor as moviepy
 import cv2
@@ -17,8 +14,6 @@ import time
 import sys
 
 def object_detection_video():
-    #object_detection_video.has_beenCalled = True
-    #pass
     CONFIDENCE = 0.5
     SCORE_THRESHOLD = 0.5
     IOU_THRESHOLD = 0.5
@@ -45,17 +40,15 @@ def object_detection_video():
         
         vid = uploaded_video.name
         with open(vid, mode='wb') as f:
-            f.write(uploaded_video.read()) # save video to disk
+            f.write(uploaded_video.read()) # сохранение видео
 
         st_video = open(vid,'rb')
         video_bytes = st_video.read()
         st.video(video_bytes)
         st.write("Uploaded Video")
-        #video_file = 'street.mp4'
         cap = cv2.VideoCapture(vid)
         _, image = cap.read()
         h, w = image.shape[:2]
-        #out = cv2.VideoWriter(output_name, cv2.VideoWriter_fourcc#(*'avc3'), fps, insize)
 
 
 
@@ -76,63 +69,55 @@ def object_detection_video():
                 print(f"Time took: {count}", time_took)
                 boxes, confidences, class_ids = [], [], []
 
-                # loop over each of the layer outputs
+                # цикля для кадра
                 for output in layer_outputs:
-                    # loop over each of the object detections
+                    # Цикл для объекта
                     for detection in output:
-                        # extract the class id (label) and confidence (as a probability) of
-                        # the current object detection
+                        # название (id) и достоверность для объекта
                         scores = detection[5:]
                         class_id = np.argmax(scores)
                         confidence = scores[class_id]
-                        # discard weak predictions by ensuring the detected
-                        # probability is greater than the minimum probability
+
                         if confidence > CONFIDENCE:
-                            # scale the bounding box coordinates back relative to the
-                            # size of the image, keeping in mind that YOLO actually
-                            # returns the center (x, y)-coordinates of the bounding
-                            # box followed by the boxes' width and height
+                            # масштабирование прямоугольника
                             box = detection[:4] * np.array([w, h, w, h])
                             (centerX, centerY, width, height) = box.astype("int")
 
-                            # use the center (x, y)-coordinates to derive the top and
-                            # and left corner of the bounding box
+                            # координаты для отрисовки
                             x = int(centerX - (width / 2))
                             y = int(centerY - (height / 2))
 
-                            # update our list of bounding box coordinates, confidences,
-                            # and class IDs
+                            # обновление листа
                             boxes.append([x, y, int(width), int(height)])
                             confidences.append(float(confidence))
                             class_ids.append(class_id)
 
-                # perform the non maximum suppression given the scores defined before
                 idxs = cv2.dnn.NMSBoxes(boxes, confidences, SCORE_THRESHOLD, IOU_THRESHOLD)
 
                 font_scale = 0.6
                 thickness = 1
 
-                # ensure at least one detection exists
+                # если есть обнаружение
                 if len(idxs) > 0:
-                    # loop over the indexes we are keeping
+
                     for i in idxs.flatten():
-                        # extract the bounding box coordinates
+                        # координаты прямоугольника вокруг обьекта
                         x, y = boxes[i][0], boxes[i][1]
                         w, h = boxes[i][2], boxes[i][3]
-                        # draw a bounding box rectangle and label on the image
+                        # рисование прямоугольника и название
                         color = [int(c) for c in colors[class_ids[i]]]
                         cv2.rectangle(image, (x, y), (x + w, y + h), color=color, thickness=thickness)
                         text = f"{labels[class_ids[i]]}: {confidences[i]:.2f}"
-                        # calculate text width & height to draw the transparent boxes as background of the text
+                        # вычисление ширины текста и высоты
                         (text_width, text_height) = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, fontScale=font_scale, thickness=thickness)[0]
                         text_offset_x = x
                         text_offset_y = y - 5
                         box_coords = ((text_offset_x, text_offset_y), (text_offset_x + text_width + 2, text_offset_y - text_height))
                         overlay = image.copy()
                         cv2.rectangle(overlay, box_coords[0], box_coords[1], color=color, thickness=cv2.FILLED)
-                        # add opacity (transparency to the box)
+                        # добавление прозрачности
                         image = cv2.addWeighted(overlay, 0.6, image, 0.4, 0)
-                        # now put the text (label: confidence %)
+                        # установка текста и величины погрешности
                         cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,
                             fontScale=font_scale, color=(0, 0, 0), thickness=thickness)
 
@@ -145,7 +130,6 @@ def object_detection_video():
                 break
 
 
-        #return "detected_video.mp4"
             
         cap.release()
         cv2.destroyAllWindows()
@@ -166,9 +150,10 @@ def object_detection_image():
 
         st.image(img1, caption = "Uploaded Image")
         my_bar = st.progress(0)
+        # слайдеры для достоверности и установки погрешности
         confThreshold =st.slider('Confidence', 0, 100, 50)
         nmsThreshold= st.slider('Threshold', 0, 100, 20)
-        #classNames = []
+
         whT = 320
         f = open(r'..\labels\coconames.txt','r')
         lines = f.readlines()
@@ -248,26 +233,20 @@ def main():
     to demonstrate YOLO Object detection in videos and images.
     
     
-    This YOLO object Detection project can detect 80 objects
-    in either a video or image. The full list of the objects can be found 
-    [here]()"""
+    """
     )
     st.sidebar.title("Select Activity")
     choice  = st.sidebar.selectbox("MODE",("About","Object Detection in Image","Object Detection in Video"))
     
     
     if choice == "Object Detection in Image":
-        #st.subheader("Object Detection")
         read_me_0.empty()
         read_me.empty()
-        #st.title('Object Detection')
         object_detection_image()
     elif choice == "Object Detection in Video":
         read_me_0.empty()
         read_me.empty()
-        #object_detection_video.has_beenCalled = False
         object_detection_video()
-        #if object_detection_video.has_beenCalled:
         try:
 
             clip = moviepy.VideoFileClip('detected_video.mp4')
