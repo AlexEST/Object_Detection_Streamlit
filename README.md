@@ -19,7 +19,7 @@ pip install Pandas
  ```
 4. OpenCV. Computer Vision library.
 ```python
-pip install Opencv-python
+pip install Opencv-Python
  ```
 5. Pillow. Python Imaging Library
 ```python
@@ -31,5 +31,5 @@ pip install Moviepy
  ```
 7. Streamlit-embedcode. Streamlit component for embedded code snippets.
 ```python
-pip install Streamlit-embedcode
+pip install Streamlit-Embedcode
  ```
