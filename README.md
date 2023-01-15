@@ -7,7 +7,7 @@ First off all you need install python. This app tested on python 3.10.
 For application you need install: <br />
 1. Streamlit framework.
 ```python
-pip install streamlit
+pip install Streamlit
  ```
 2. NumPy. It is package for computing with Python.
 ```python
