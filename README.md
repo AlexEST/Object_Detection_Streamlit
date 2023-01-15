@@ -11,15 +11,15 @@ pip install Streamlit
  ```
 2. NumPy. It is package for computing with Python.
 ```python
-pip install numpy
+pip install Numpy
  ```
 3. Pandas. Package that provides fast, flexible, and expressive data structures. 
 ```python
-pip install pandas
+pip install Pandas
  ```
 4. OpenCV. Computer Vision library.
 ```python
-pip install opencv-python
+pip install Opencv-python
  ```
 5. Pillow. Python Imaging Library
 ```python
@@ -27,9 +27,9 @@ pip install Pillow
  ```
 6. MoviePy. Python library for video editing.
 ```python
-pip install moviepy
+pip install Moviepy
  ```
 7. Streamlit-embedcode. Streamlit component for embedded code snippets.
 ```python
-pip install streamlit-embedcode
+pip install Streamlit-embedcode
  ```
